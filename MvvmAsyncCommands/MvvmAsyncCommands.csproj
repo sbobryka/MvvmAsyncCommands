@@ -64,6 +64,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Commands\BaseCommand.cs" />
+    <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Commands\RelayCommandAsync.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />

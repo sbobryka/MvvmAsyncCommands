@@ -11,9 +11,6 @@ namespace MvvmAsyncCommands.ViewModels
 {
     internal class MainViewModel : BaseViewModel
     {
-        private CancellationTokenSource cancellationTokenSource;
-        private CancellationToken cancellationToken;
-
         #region CurrentValue
 
         private double currentValue;
@@ -40,16 +37,13 @@ namespace MvvmAsyncCommands.ViewModels
 
         #region StartCommandAsync
 
-        public ICommand StartCommandAsync { get; }
+        public RelayCommandAsync StartCommandAsync { get; }
 
         private async Task OnStartCommandAsyncExecuted(object property)
         {
-            cancellationTokenSource = new CancellationTokenSource();
-            cancellationToken = cancellationTokenSource.Token;
-
-            for (int i = 0; i < 100; i++)
+            for (double i = CurrentValue; i < MaxValue; i++)
             {
-                if (cancellationToken.IsCancellationRequested) return;
+                if (StartCommandAsync.IsCancellationRequested) return;
 
                 CurrentValue = await Task.Run(() => IncreaseValue(CurrentValue));
             }
@@ -68,7 +62,7 @@ namespace MvvmAsyncCommands.ViewModels
 
         private void OnCancelCommandExecuted(object property)
         {
-            cancellationTokenSource.Cancel();
+            StartCommandAsync.StopExecute();
         } 
 
         #endregion
@@ -77,7 +71,7 @@ namespace MvvmAsyncCommands.ViewModels
 
         private double IncreaseValue(double value)
         {
-            Thread.Sleep(100);
+            Thread.Sleep(10);
             return ++value;
         }
 
@@ -85,13 +79,10 @@ namespace MvvmAsyncCommands.ViewModels
 
         public MainViewModel()
         {
-            cancellationTokenSource = new CancellationTokenSource();
-            cancellationToken = cancellationTokenSource.Token;
-
             CurrentValue = 0;
             MaxValue = 1000;
 
-            StartCommandAsync = new RelayCommandAsync(OnStartCommandAsyncExecuted, cancellationToken, CanStartCommandAsyncExecute);
+            StartCommandAsync = new RelayCommandAsync(OnStartCommandAsyncExecuted, CanStartCommandAsyncExecute);
             CancelCommand = new RelayCommand(OnCancelCommandExecuted);
         }
     }

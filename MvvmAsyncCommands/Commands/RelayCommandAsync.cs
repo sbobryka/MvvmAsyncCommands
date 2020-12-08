@@ -10,7 +10,7 @@ namespace MvvmAsyncCommands.Commands
 {
     internal class RelayCommandAsync : BaseCommand
     {
-        private bool isExecuting;
+        public bool isExecuting { get; private set; }
         private CancellationTokenSource cancellationTokenSource;
         private CancellationToken cancellationToken;
         private Func<object, Task> execute;
@@ -40,6 +40,7 @@ namespace MvvmAsyncCommands.Commands
 
             isExecuting = true;
             await execute(parameter);
+
             isExecuting = false;
             CommandManager.InvalidateRequerySuggested();
         }
@@ -53,9 +54,6 @@ namespace MvvmAsyncCommands.Commands
         {
             this.execute = execute ?? throw new ArgumentNullException(nameof(execute));
             this.canExecute = canExecute;
-
-            //cancellationTokenSource = new CancellationTokenSource();
-            //cancellationToken = cancellationTokenSource.Token;
         }
     }
 }

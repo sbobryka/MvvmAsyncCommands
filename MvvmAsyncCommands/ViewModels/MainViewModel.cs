@@ -63,7 +63,12 @@ namespace MvvmAsyncCommands.ViewModels
         private void OnCancelCommandExecuted(object property)
         {
             StartCommandAsync.StopExecute();
-        } 
+        }
+
+        private bool CanCancelCommandExecute(object property)
+        {
+            return StartCommandAsync.isExecuting;
+        }
 
         #endregion
 
@@ -83,7 +88,7 @@ namespace MvvmAsyncCommands.ViewModels
             MaxValue = 1000;
 
             StartCommandAsync = new RelayCommandAsync(OnStartCommandAsyncExecuted, CanStartCommandAsyncExecute);
-            CancelCommand = new RelayCommand(OnCancelCommandExecuted);
+            CancelCommand = new RelayCommand(OnCancelCommandExecuted, CanCancelCommandExecute);
         }
     }
 }

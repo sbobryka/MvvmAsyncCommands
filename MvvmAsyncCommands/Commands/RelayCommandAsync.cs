@@ -31,13 +31,6 @@ namespace MvvmAsyncCommands.Commands
             cancellationTokenSource = new CancellationTokenSource();
             cancellationToken = cancellationTokenSource.Token;
 
-            if (cancellationToken.IsCancellationRequested)
-            {
-                isExecuting = false;
-                CommandManager.InvalidateRequerySuggested();
-                return;
-            }
-
             isExecuting = true;
             await execute(parameter);
 

@@ -1,4 +1,5 @@
 ﻿using MvvmAsyncCommands.Commands;
+using MvvmAsyncCommands.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,8 @@ namespace MvvmAsyncCommands.ViewModels
 {
     internal class MainViewModel : BaseViewModel
     {
+        Operations operations;
+
         #region CurrentValue
 
         private double currentValue;
@@ -45,7 +48,9 @@ namespace MvvmAsyncCommands.ViewModels
             {
                 if (StartCommandAsync.IsCancellationRequested) return;
 
-                CurrentValue = await Task.Run(() => IncreaseValue(CurrentValue));
+                await Task.Run(() => operations.SomeOperation());
+
+                CurrentValue = i;
             }
         }
 
@@ -72,16 +77,6 @@ namespace MvvmAsyncCommands.ViewModels
 
         #endregion
 
-        #region IncreaseValue
-
-        private double IncreaseValue(double value)
-        {
-            Thread.Sleep(10);
-            return ++value;
-        }
-
-        #endregion
-
         public MainViewModel()
         {
             CurrentValue = 0;
@@ -89,6 +84,8 @@ namespace MvvmAsyncCommands.ViewModels
 
             StartCommandAsync = new RelayCommandAsync(OnStartCommandAsyncExecuted, CanStartCommandAsyncExecute);
             CancelCommand = new RelayCommand(OnCancelCommandExecuted, CanCancelCommandExecute);
+
+            operations = new Operations();
         }
     }
 }
